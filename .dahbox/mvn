@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# =-=            =-= #
+# =-= DahBox mvn =-= #
+# =-=            =-= #
+
+# DAHBOX_VERSION=beta
+# DAHBOX_HOME=/home/jlesage/Projets/Pristy/alfresco-kafka/.dahbox
+# DAHBOX_DATE=mar. 21 déc. 2021 02:37:19 CET
+# DAHBOX_COMMAND=dahbox create mvn --from maven --tag 3.8.4-openjdk-11  USER_HOME_DIR=\$HOME --command "mvn -Duser.home=\$HOME" --no-entrypoint
+# DAHBOX_SHA=90f24133f25b148eddb59de7ef9cde1f480c89f4
+
+
+# 1. Check Image
+image_id=$(podman image ls --filter 'label=fr.jeci.dahbox.name=mvn' --filter 'label=fr.jeci.dahbox.sha=90f24133f25b148eddb59de7ef9cde1f480c89f4' --noheading --quiet)
+
+# 2. Build Image
+if [[ -z "$image_id" ]]; then
+  echo "=-= DahBox Build mvn =-="
+  container=$(buildah from docker.io/maven:3.8.4-openjdk-11)
+  
+  
+
+  ## Include some buildtime annotations
+  buildah config --label "fr.jeci.dahbox.name=mvn" "$container"
+  buildah config --label "fr.jeci.dahbox.from=docker.io/maven:3.8.4-openjdk-11" "$container"
+  buildah config --label "fr.jeci.dahbox.sha=90f24133f25b148eddb59de7ef9cde1f480c89f4" "$container"
+  buildah commit "$container" "dahbox/mvn:90f24133f25b148eddb59de7ef9cde1f480c89f4"
+  echo "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+fi
+
+export PODMAN_USERNS=keep-id
+
+# 3. Run container
+podman run --rm \
+  -e USER_HOME_DIR=$HOME \
+  -v "$HOME:$HOME" -w "$PWD" \
+  --init -it --net host --security-opt label=type:container_runtime_t --entrypoint "" \
+  "dahbox/mvn:90f24133f25b148eddb59de7ef9cde1f480c89f4" mvn -Duser.home=$HOME "$@"
