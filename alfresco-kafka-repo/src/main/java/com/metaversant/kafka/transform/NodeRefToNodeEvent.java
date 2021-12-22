@@ -52,46 +52,45 @@ public class NodeRefToNodeEvent {
      * @return the node event
      */
     public NodeEvent transform(final NodeRef nodeRef) {
-    	if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("NodeEvent transform invoked for nodeRef: " + nodeRef);
-		}
-    	final Map<QName, Serializable> props = nodeService.getProperties(nodeRef);
-    	final NodeEvent nodeEvent = NodeEvent.builder()
-                .nodeRef(nodeRef.getId())
-                .creator((String) props.get(PROP_CREATOR))
-                .created((Date) props.get(PROP_CREATED))
-                .modifier((String) props.get(PROP_MODIFIER))
-                .modified((Date) props.get(PROP_MODIFIED))
-                .path(nodeService.getPath(nodeRef).toString())
-                .parent(nodeService.getPrimaryParent(nodeRef).getParentRef().getId())
-                .contentType(nodeService.getType(nodeRef).toPrefixString())
-                .build();
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("NodeEvent transform invoked for nodeRef: " + nodeRef);
+	}
+	final Map<QName, Serializable> props = nodeService.getProperties(nodeRef);
+	final NodeEvent nodeEvent = new NodeEvent();
+	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setCreator((String) props.get(PROP_CREATOR));
+	nodeEvent.setCreated((Date) props.get(PROP_CREATED));
+	nodeEvent.setModifier((String) props.get(PROP_MODIFIER));
+	nodeEvent.setModified((Date) props.get(PROP_MODIFIED));
+	nodeEvent.setPath(nodeService.getPath(nodeRef).toString());
+	nodeEvent.setParent(nodeService.getPrimaryParent(nodeRef).getParentRef().getId());
+	nodeEvent.setContentType(nodeService.getType(nodeRef).toPrefixString());
 
-        // If this node is in a site, add the site ID to the event
-    	final SiteInfo siteInfo = siteService.getSite(nodeRef);
-		if (siteInfo != null) {
-            nodeEvent.setSiteId(siteInfo.getShortName());
-        }
+	// If this node is in a site, add the site ID to the event
+	final SiteInfo siteInfo = siteService.getSite(nodeRef);
+	if (siteInfo != null) {
+	    nodeEvent.setSiteId(siteInfo.getShortName());
+	}
 
-        // Retrieve the tags from the node and add them to the event
-		final List<String> tags = taggingService.getTags(nodeRef);
-        nodeEvent.setTags(tags);
+	// Retrieve the tags from the node and add them to the event
+	final List<String> tags = taggingService.getTags(nodeRef);
+	nodeEvent.setTags(tags);
 
-        // If this is a content object, set the mimetype and size props
-		if (props.get(PROP_CONTENT) != null) {
-            ContentReader reader = null;
-            try {
-                reader = contentService.getReader(nodeRef, PROP_CONTENT);
-            } catch (Exception excp) {
-				LOGGER.error("Error reading content: " + excp.getMessage(), excp);
-            }
+	// If this is a content object, set the mimetype and size props
+	if (props.get(PROP_CONTENT) != null) {
+	    ContentReader reader = null;
+	    try {
+		reader = contentService.getReader(nodeRef, PROP_CONTENT);
+	    } catch (Exception excp) {
+		LOGGER.error("Error reading content: " + excp.getMessage(), excp);
+	    }
 
-			if (reader != null) {
-                nodeEvent.setMimetype(reader.getMimetype());
-                nodeEvent.setSize(reader.getContentData().getSize());
-            }
-        }
-        return nodeEvent;
+	    if (reader != null) {
+		nodeEvent.setMimetype(reader.getMimetype());
+		nodeEvent.setSize(reader.getContentData().getSize());
+	    }
+	}
+	return nodeEvent;
     }
 
     /**

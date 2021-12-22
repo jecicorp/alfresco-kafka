@@ -95,17 +95,16 @@ public class GenerateNodePermissionEvent
      */
     @Override
     public void onGrantLocalPermission(final NodeRef nodeRef, final String authority, final String permission) {
-    	if (LOGGER.isDebugEnabled()) {
-        	LOGGER.debug("inside onGrantLocalPermission");
-        }
-    	final NodeEvent nodeEvent = NodeEvent.builder()
-                .eventType(NodeEvent.EventType.GRANT)
-                .nodeRef(nodeRef.getId())
-                .authority(authority)
-                .permission(permission)
-                .build();
-        nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-        messageService.publish(nodeEvent);
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("inside onGrantLocalPermission");
+	}
+	final NodeEvent nodeEvent = new NodeEvent();
+	nodeEvent.setEventType(NodeEvent.EventType.GRANT);
+	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setAuthority(authority);
+	nodeEvent.setPermission(permission);
+	nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+	messageService.publish(nodeEvent);
     }
 
     /**
@@ -117,17 +116,16 @@ public class GenerateNodePermissionEvent
      */
     @Override
     public void onRevokeLocalPermission(final NodeRef nodeRef, final String authority, final String permission) {
-    	if (LOGGER.isDebugEnabled()) {
-        	LOGGER.debug("inside onRevokeLocalPermission");
-        }
-    	final NodeEvent nodeEvent = NodeEvent.builder()
-                .eventType(NodeEvent.EventType.REVOKE)
-                .nodeRef(nodeRef.getId())
-                .authority(authority)
-                .permission(permission)
-                .build();
-        nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-        messageService.publish(nodeEvent);
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("inside onRevokeLocalPermission");
+	}
+	final NodeEvent nodeEvent = new NodeEvent();
+	nodeEvent.setEventType(NodeEvent.EventType.REVOKE);
+	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setAuthority(authority);
+	nodeEvent.setPermission(permission);
+	nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+	messageService.publish(nodeEvent);
     }
 
     /**
@@ -138,15 +136,14 @@ public class GenerateNodePermissionEvent
      */
     @Override
     public void onInheritPermissionsDisabled(final NodeRef nodeRef, final boolean async) {
-        if (LOGGER.isDebugEnabled()) {
-        	LOGGER.debug("inside onInheritPermissionsDisabled");
-        }
-        final NodeEvent nodeEvent = NodeEvent.builder()
-                .eventType(NodeEvent.EventType.DISABLE_INHERIT)
-                .nodeRef(nodeRef.getId())
-                .build();
-        nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-        messageService.publish(nodeEvent);
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("inside onInheritPermissionsDisabled");
+	}
+	final NodeEvent nodeEvent = new NodeEvent();
+	nodeEvent.setEventType(NodeEvent.EventType.DISABLE_INHERIT);
+	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+	messageService.publish(nodeEvent);
     }
 
     /**
@@ -156,15 +153,14 @@ public class GenerateNodePermissionEvent
      */
     @Override
     public void onInheritPermissionsEnabled(final NodeRef nodeRef) {
-        if (LOGGER.isDebugEnabled()) {
-        	LOGGER.debug("inside onInheritPermissionsEnabled");
-        }
-        final NodeEvent nodeEvent = NodeEvent.builder()
-                .eventType(NodeEvent.EventType.ENABLE_INHERIT)
-                .nodeRef(nodeRef.getId())
-                .build();
-        nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-        messageService.publish(nodeEvent);
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("inside onInheritPermissionsEnabled");
+	}
+	final NodeEvent nodeEvent = new NodeEvent();
+	nodeEvent.setEventType(NodeEvent.EventType.ENABLE_INHERIT);
+	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+	messageService.publish(nodeEvent);
     }
 
     /**
