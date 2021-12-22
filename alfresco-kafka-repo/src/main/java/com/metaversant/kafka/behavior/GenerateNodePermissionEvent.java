@@ -30,54 +30,44 @@ public class GenerateNodePermissionEvent
 
     /** The node permissions transformer. */
     private NodeRefToNodePermissions nodePermissionsTransformer;
-    /** The on grant local permission. */
-    private Behaviour onGrantLocalPermission;
-    
-    /** The on revoke local permission. */
-    private Behaviour onRevokeLocalPermission;
-    
-    /** The on inherit permissions enabled. */
-    private Behaviour onInheritPermissionsEnabled;
-    
-    /** The on inherit permissions disabled. */
-    private Behaviour onInheritPermissionsDisabled;
-    /////////////////////  Behaviours [End] //////////////////
 
     /**
      * Inits the.
      */
     public void init() {
-    	
-        if (LOGGER.isDebugEnabled()) {
-        	LOGGER.debug("Initializing GenerateNodePermissionEvent behaviors");
-        }
 
-        // Create behaviours
-        this.onGrantLocalPermission = new JavaBehaviour(this, "onGrantLocalPermission", Behaviour.NotificationFrequency.EVERY_EVENT);
-        this.onRevokeLocalPermission = new JavaBehaviour(this, "onRevokeLocalPermission", Behaviour.NotificationFrequency.EVERY_EVENT);
-        this.onInheritPermissionsEnabled = new JavaBehaviour(this, "onInheritPermissionsEnabled", Behaviour.NotificationFrequency.EVERY_EVENT);
-        this.onInheritPermissionsDisabled = new JavaBehaviour(this, "onInheritPermissionsDisabled", Behaviour.NotificationFrequency.EVERY_EVENT);
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("Initializing GenerateNodePermissionEvent behaviors");
+	}
 
-        // Bind behaviours to node policies
-        this.policyComponent.bindClassBehaviour(
-                PermissionServicePolicies.OnGrantLocalPermission.QNAME,
-                ContentModel.TYPE_CMOBJECT,
-                this.onGrantLocalPermission);
+	/** The on grant local permission. */
+	Behaviour onGrantLocalPermission = new JavaBehaviour(this, "onGrantLocalPermission",
+		Behaviour.NotificationFrequency.EVERY_EVENT);
 
-        this.policyComponent.bindClassBehaviour(
-                PermissionServicePolicies.OnRevokeLocalPermission.QNAME,
-                ContentModel.TYPE_CMOBJECT,
-                this.onRevokeLocalPermission);
+	/** The on revoke local permission. */
+	Behaviour onRevokeLocalPermission = new JavaBehaviour(this, "onRevokeLocalPermission",
+		Behaviour.NotificationFrequency.EVERY_EVENT);
 
-        this.policyComponent.bindClassBehaviour(
-                PermissionServicePolicies.OnInheritPermissionsEnabled.QNAME,
-                ContentModel.TYPE_BASE,
-                this.onInheritPermissionsEnabled);
+	/** The on inherit permissions enabled. */
+	Behaviour onInheritPermissionsEnabled = new JavaBehaviour(this, "onInheritPermissionsEnabled",
+		Behaviour.NotificationFrequency.EVERY_EVENT);
 
-        this.policyComponent.bindClassBehaviour(
-                PermissionServicePolicies.OnInheritPermissionsDisabled.QNAME,
-                ContentModel.TYPE_BASE,
-                this.onInheritPermissionsDisabled);
+	/** The on inherit permissions disabled. */
+	Behaviour onInheritPermissionsDisabled = new JavaBehaviour(this, "onInheritPermissionsDisabled",
+		Behaviour.NotificationFrequency.EVERY_EVENT);
+
+	// Bind behaviours to node policies
+	this.policyComponent.bindClassBehaviour(PermissionServicePolicies.OnGrantLocalPermission.QNAME,
+		ContentModel.TYPE_CMOBJECT, onGrantLocalPermission);
+
+	this.policyComponent.bindClassBehaviour(PermissionServicePolicies.OnRevokeLocalPermission.QNAME,
+		ContentModel.TYPE_CMOBJECT, onRevokeLocalPermission);
+
+	this.policyComponent.bindClassBehaviour(PermissionServicePolicies.OnInheritPermissionsEnabled.QNAME,
+		ContentModel.TYPE_BASE, onInheritPermissionsEnabled);
+
+	this.policyComponent.bindClassBehaviour(PermissionServicePolicies.OnInheritPermissionsDisabled.QNAME,
+		ContentModel.TYPE_BASE, onInheritPermissionsDisabled);
 
     }
 

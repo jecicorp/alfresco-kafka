@@ -28,7 +28,6 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(GenerateNodeEvent.class);
 
-    ///////////////////// Dependencies [Start] ////////////////
     /** The node service. */
     private NodeService nodeService;
 
@@ -43,45 +42,36 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
 
     /** The node permissions transformer. */
     private NodeRefToNodePermissions nodePermissionsTransformer;
-    ///////////////////// Dependencies [End] //////////////////
-
-    ///////////////////// Behaviours [Start] //////////////////
-    /** The on create node. */
-    private Behaviour onCreateNode;
-
-    /** The before delete node. */
-    private Behaviour beforeDeleteNode;
-
-    /** The on update properties. */
-    private Behaviour onUpdateProperties;
-    ///////////////////// Behaviours [End] //////////////////
 
     /**
      * Inits the.
      */
     public void init() {
-
 	if (LOGGER.isDebugEnabled()) {
 	    LOGGER.debug("Initializing GenerateNodeEvent behaviors");
 	}
 
-	// Create behaviours
-	this.onCreateNode = new JavaBehaviour(this, "onCreateNode", Behaviour.NotificationFrequency.TRANSACTION_COMMIT);
-	this.beforeDeleteNode = new JavaBehaviour(this, "beforeDeleteNode",
+	/** The on create node. */
+	Behaviour onCreateNode = new JavaBehaviour(this, "onCreateNode",
+		Behaviour.NotificationFrequency.TRANSACTION_COMMIT);
+
+	/** The before delete node. */
+	Behaviour beforeDeleteNode = new JavaBehaviour(this, "beforeDeleteNode",
 		Behaviour.NotificationFrequency.FIRST_EVENT);
-	this.onUpdateProperties = new JavaBehaviour(this, "onUpdateProperties",
+
+	/** The on update properties. */
+	Behaviour onUpdateProperties = new JavaBehaviour(this, "onUpdateProperties",
 		Behaviour.NotificationFrequency.TRANSACTION_COMMIT);
 
 	// Bind behaviours to node policies
 	this.policyComponent.bindClassBehaviour(NodeServicePolicies.OnCreateNodePolicy.QNAME,
-		ContentModel.TYPE_CMOBJECT, this.onCreateNode);
+		ContentModel.TYPE_CMOBJECT, onCreateNode);
 
 	this.policyComponent.bindClassBehaviour(NodeServicePolicies.BeforeDeleteNodePolicy.QNAME,
-		ContentModel.TYPE_CMOBJECT, this.beforeDeleteNode);
+		ContentModel.TYPE_CMOBJECT, beforeDeleteNode);
 
 	this.policyComponent.bindClassBehaviour(NodeServicePolicies.OnUpdatePropertiesPolicy.QNAME,
-		ContentModel.TYPE_CMOBJECT, this.onUpdateProperties);
-
+		ContentModel.TYPE_CMOBJECT, onUpdateProperties);
     }
 
     /**
