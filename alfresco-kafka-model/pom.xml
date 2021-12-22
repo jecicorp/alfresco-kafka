@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>alfresco-kafka</artifactId>
 		<groupId>com.metaversant</groupId>
-		<version>0.0.3-SNAPSHOT</version>
+		<version>0.0.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>alfresco-kafka-model</artifactId>
