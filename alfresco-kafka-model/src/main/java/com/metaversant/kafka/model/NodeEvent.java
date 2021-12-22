@@ -43,6 +43,10 @@ public class NodeEvent {
 
     /** The node ref. */
     private String nodeRef;
+
+    /** The node Id */
+    private String nodeId;
+
     /** The event type. */
     private NodeEvent.EventType eventType;
 
@@ -94,6 +98,14 @@ public class NodeEvent {
 
     public void setNodeRef(String nodeRef) {
 	this.nodeRef = nodeRef;
+    }
+
+    public String getNodeId() {
+	return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+	this.nodeId = nodeId;
     }
 
     public NodeEvent.EventType getEventType() {

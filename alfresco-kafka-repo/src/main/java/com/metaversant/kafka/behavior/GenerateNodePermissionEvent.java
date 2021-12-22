@@ -85,7 +85,8 @@ public class GenerateNodePermissionEvent
 	}
 	final NodeEvent nodeEvent = new NodeEvent();
 	nodeEvent.setEventType(NodeEvent.EventType.GRANT);
-	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setNodeRef(nodeRef.toString());
+	nodeEvent.setNodeId(nodeRef.getId());
 	nodeEvent.setAuthority(authority);
 	nodeEvent.setPermission(permission);
 	nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
@@ -106,7 +107,8 @@ public class GenerateNodePermissionEvent
 	}
 	final NodeEvent nodeEvent = new NodeEvent();
 	nodeEvent.setEventType(NodeEvent.EventType.REVOKE);
-	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setNodeRef(nodeRef.toString());
+	nodeEvent.setNodeId(nodeRef.getId());
 	nodeEvent.setAuthority(authority);
 	nodeEvent.setPermission(permission);
 	nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
@@ -126,7 +128,8 @@ public class GenerateNodePermissionEvent
 	}
 	final NodeEvent nodeEvent = new NodeEvent();
 	nodeEvent.setEventType(NodeEvent.EventType.DISABLE_INHERIT);
-	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setNodeRef(nodeRef.toString());
+	nodeEvent.setNodeId(nodeRef.getId());
 	nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
 	messageService.publish(nodeEvent);
     }
@@ -143,7 +146,8 @@ public class GenerateNodePermissionEvent
 	}
 	final NodeEvent nodeEvent = new NodeEvent();
 	nodeEvent.setEventType(NodeEvent.EventType.ENABLE_INHERIT);
-	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setNodeRef(nodeRef.toString());
+	nodeEvent.setNodeId(nodeRef.getId());
 	nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
 	messageService.publish(nodeEvent);
     }

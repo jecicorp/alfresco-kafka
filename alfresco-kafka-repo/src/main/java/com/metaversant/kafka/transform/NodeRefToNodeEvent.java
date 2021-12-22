@@ -55,7 +55,8 @@ public class NodeRefToNodeEvent {
 	}
 	final Map<QName, Serializable> props = nodeService.getProperties(nodeRef);
 	final NodeEvent nodeEvent = new NodeEvent();
-	nodeEvent.setNodeRef(nodeRef.getId());
+	nodeEvent.setNodeRef(nodeRef.toString());
+	nodeEvent.setNodeId(nodeRef.getId());
 	nodeEvent.setCreator((String) props.get(PROP_CREATOR));
 	nodeEvent.setCreated((Date) props.get(PROP_CREATED));
 	nodeEvent.setModifier((String) props.get(PROP_MODIFIER));
