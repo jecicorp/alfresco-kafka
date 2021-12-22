@@ -8,6 +8,8 @@ import org.alfresco.repo.node.NodeServicePolicies;
 import org.alfresco.repo.policy.Behaviour;
 import org.alfresco.repo.policy.JavaBehaviour;
 import org.alfresco.repo.policy.PolicyComponent;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -85,12 +87,19 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
 	    LOGGER.debug("Inside onCreateNode");
 	}
 	final NodeRef nodeRef = childAssocRef.getChildRef();
-	if (nodeService.exists(nodeRef)) {
-	    final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
-	    nodeEvent.setEventType(NodeEvent.EventType.CREATE);
-	    nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-	    messageService.publish(nodeEvent);
-	}
+	AuthenticationUtil.runAs(new RunAsWork<Void>() {
+	    @Override
+	    public Void doWork() {
+		if (nodeService.exists(nodeRef)) {
+		    final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
+		    nodeEvent.setEventType(NodeEvent.EventType.CREATE);
+		    nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+		    messageService.publish(nodeEvent);
+		}
+		return null;
+	    }
+
+	}, AuthenticationUtil.getSystemUserName());
     }
 
     /**
@@ -103,12 +112,19 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
 	if (LOGGER.isDebugEnabled()) {
 	    LOGGER.debug("Inside onDeleteNode");
 	}
-	if (nodeService.exists(nodeRef)) {
-	    final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
-	    nodeEvent.setEventType(NodeEvent.EventType.DELETE);
-	    nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-	    messageService.publish(nodeEvent);
-	}
+	AuthenticationUtil.runAs(new RunAsWork<Void>() {
+	    @Override
+	    public Void doWork() {
+		if (nodeService.exists(nodeRef)) {
+		    final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
+		    nodeEvent.setEventType(NodeEvent.EventType.DELETE);
+		    nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+		    messageService.publish(nodeEvent);
+		}
+		return null;
+	    }
+
+	}, AuthenticationUtil.getSystemUserName());
     }
 
     /**
@@ -124,12 +140,20 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
 	if (LOGGER.isDebugEnabled()) {
 	    LOGGER.debug("Inside onUpdateProperties");
 	}
-	if (nodeService.exists(nodeRef)) {
-	    final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
-	    nodeEvent.setEventType(NodeEvent.EventType.UPDATE);
-	    nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-	    messageService.publish(nodeEvent);
-	}
+	AuthenticationUtil.runAs(new RunAsWork<Void>() {
+	    @Override
+	    public Void doWork() {
+		if (nodeService.exists(nodeRef)) {
+		    final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
+		    nodeEvent.setEventType(NodeEvent.EventType.UPDATE);
+		    nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+		    messageService.publish(nodeEvent);
+		}
+
+		return null;
+	    }
+
+	}, AuthenticationUtil.getSystemUserName());
     }
 
     /**
