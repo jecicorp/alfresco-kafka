@@ -3,6 +3,7 @@ package com.metaversant.kafka.transform;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.AccessPermission;
 import org.alfresco.service.cmr.security.PermissionService;
@@ -39,20 +40,23 @@ public class NodeRefToNodePermissions {
         final NodePermissions perms = new NodePermissions();
         perms.setInheritanceEnabled(inherits);
 
-        // convert the Alfresco object into our own
-        final Set<AccessPermission> permissionSet = permissionService.getAllSetPermissions(nodeRef);
-        final Set<NodePermission> set = new HashSet<>();
-        for (final AccessPermission perm : permissionSet) {
-            final NodePermission nodePerm = NodePermission.builder()
-                    .authority(perm.getAuthority())
-                    .authorityType(perm.getAuthorityType().name())
-                    .permission(perm.getPermission())
-                    .isInherited(perm.isInherited())
-                    .build();
-            set.add(nodePerm);
-        }
-        perms.setPermissions(set);
-        return perms;
+	// convert the Alfresco object into our own
+	try {
+	    final Set<AccessPermission> permissionSet = permissionService.getAllSetPermissions(nodeRef);
+	    final Set<NodePermission> set = new HashSet<>(permissionSet.size());
+	    for (final AccessPermission perm : permissionSet) {
+		final NodePermission nodePerm = new NodePermission();
+		nodePerm.setAuthority(perm.getAuthority());
+		nodePerm.setAuthorityType(perm.getAuthorityType().name());
+		nodePerm.setPermission(perm.getPermission());
+		nodePerm.setInherited(perm.isInherited());
+		set.add(nodePerm);
+	    }
+	    perms.setPermissions(set);
+	} catch (AccessDeniedException e) {
+	    LOGGER.warn("Do not have permission to read getAllSetPermissions on " + nodeRef);
+	}
+	return perms;
     }
 
     /**
