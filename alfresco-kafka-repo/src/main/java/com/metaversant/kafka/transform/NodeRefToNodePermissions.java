@@ -16,14 +16,12 @@ import com.metaversant.kafka.model.NodePermissions;
  * Created by jpotts, Metaversant on 8/28/19.
  */
 public class NodeRefToNodePermissions {
-	
-	/** The LOGGER. */
+
+    /** The LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(NodeRefToNodePermissions.class);
-    
-    /////////////////////  Dependencies [Start] ////////////////
+
     /** The permission service. */
     private PermissionService permissionService;
-    /////////////////////  Dependencies [End] ////////////////
 
     /**
      * Transform.
@@ -32,13 +30,13 @@ public class NodeRefToNodePermissions {
      * @return the node permissions
      */
     public NodePermissions transform(final NodeRef nodeRef) {
-    	if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("NodePermissions transform invoked for nodeRef: " + nodeRef);
-		}
-        // determine if the node inherits its ACL from the parent
-        final boolean inherits = permissionService.getInheritParentPermissions(nodeRef);
-        final NodePermissions perms = new NodePermissions();
-        perms.setInheritanceEnabled(inherits);
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("NodePermissions transform invoked for nodeRef: " + nodeRef);
+	}
+	// determine if the node inherits its ACL from the parent
+	final boolean inherits = permissionService.getInheritParentPermissions(nodeRef);
+	final NodePermissions perms = new NodePermissions();
+	perms.setInheritanceEnabled(inherits);
 
 	// convert the Alfresco object into our own
 	try {
@@ -65,6 +63,6 @@ public class NodeRefToNodePermissions {
      * @param permissionService the new permission service
      */
     public void setPermissionService(final PermissionService permissionService) {
-        this.permissionService = permissionService;
+	this.permissionService = permissionService;
     }
 }

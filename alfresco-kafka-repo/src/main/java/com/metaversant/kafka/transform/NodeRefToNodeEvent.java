@@ -27,23 +27,21 @@ import com.metaversant.kafka.model.NodeEvent;
  * Created by jpotts, Metaversant on 6/9/17.
  */
 public class NodeRefToNodeEvent {
-    
+
     /** The LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(NodeRefToNodeEvent.class);
 
-    /////////////////////  Dependencies [Start] ////////////////
     /** The content service. */
     private ContentService contentService;
-    
+
     /** The node service. */
     private NodeService nodeService;
-    
+
     /** The site service. */
     private SiteService siteService;
-    
+
     /** The tagging service. */
     private TaggingService taggingService;
-    /////////////////////  Dependencies [End] ////////////////
 
     /**
      * Transform.
@@ -99,7 +97,7 @@ public class NodeRefToNodeEvent {
      * @param contentService the new content service
      */
     public void setContentService(final ContentService contentService) {
-        this.contentService = contentService;
+	this.contentService = contentService;
     }
 
     /**
@@ -108,7 +106,7 @@ public class NodeRefToNodeEvent {
      * @param nodeService the new node service
      */
     public void setNodeService(final NodeService nodeService) {
-        this.nodeService = nodeService;
+	this.nodeService = nodeService;
     }
 
     /**
@@ -117,7 +115,7 @@ public class NodeRefToNodeEvent {
      * @param siteService the new site service
      */
     public void setSiteService(final SiteService siteService) {
-        this.siteService = siteService;
+	this.siteService = siteService;
     }
 
     /**
@@ -126,6 +124,6 @@ public class NodeRefToNodeEvent {
      * @param taggingService the new tagging service
      */
     public void setTaggingService(final TaggingService taggingService) {
-        this.taggingService = taggingService;
+	this.taggingService = taggingService;
     }
 }

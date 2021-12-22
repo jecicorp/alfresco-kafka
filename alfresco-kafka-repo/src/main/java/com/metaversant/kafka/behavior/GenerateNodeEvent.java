@@ -23,68 +23,64 @@ import com.metaversant.kafka.transform.NodeRefToNodePermissions;
  * Created by jpotts, Metaversant on 6/9/17.
  */
 public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePolicy,
-		NodeServicePolicies.OnCreateNodePolicy, NodeServicePolicies.OnUpdatePropertiesPolicy {
-	
-	/** The Constant LOGGER. */
+	NodeServicePolicies.OnCreateNodePolicy, NodeServicePolicies.OnUpdatePropertiesPolicy {
+
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(GenerateNodeEvent.class);
 
-    /////////////////////  Dependencies [Start] ////////////////
+    ///////////////////// Dependencies [Start] ////////////////
     /** The node service. */
     private NodeService nodeService;
-    
+
     /** The policy component. */
     private PolicyComponent policyComponent;
-    
+
     /** The message service. */
     private MessageService messageService;
-    
+
     /** The node transformer. */
     private NodeRefToNodeEvent nodeTransformer;
-    
+
     /** The node permissions transformer. */
     private NodeRefToNodePermissions nodePermissionsTransformer;
-    /////////////////////  Dependencies [End] //////////////////
+    ///////////////////// Dependencies [End] //////////////////
 
-    /////////////////////  Behaviours [Start] //////////////////
+    ///////////////////// Behaviours [Start] //////////////////
     /** The on create node. */
     private Behaviour onCreateNode;
-    
+
     /** The before delete node. */
     private Behaviour beforeDeleteNode;
-    
+
     /** The on update properties. */
     private Behaviour onUpdateProperties;
-    /////////////////////  Behaviours [End] //////////////////
+    ///////////////////// Behaviours [End] //////////////////
 
     /**
      * Inits the.
      */
     public void init() {
-    	
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Initializing GenerateNodeEvent behaviors");
-		}
 
-        // Create behaviours
-        this.onCreateNode = new JavaBehaviour(this, "onCreateNode", Behaviour.NotificationFrequency.TRANSACTION_COMMIT);
-        this.beforeDeleteNode = new JavaBehaviour(this, "beforeDeleteNode", Behaviour.NotificationFrequency.FIRST_EVENT);
-        this.onUpdateProperties = new JavaBehaviour(this, "onUpdateProperties", Behaviour.NotificationFrequency.TRANSACTION_COMMIT);
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("Initializing GenerateNodeEvent behaviors");
+	}
 
-        // Bind behaviours to node policies
-        this.policyComponent.bindClassBehaviour(
-                NodeServicePolicies.OnCreateNodePolicy.QNAME,
-                ContentModel.TYPE_CMOBJECT,
-                this.onCreateNode);
+	// Create behaviours
+	this.onCreateNode = new JavaBehaviour(this, "onCreateNode", Behaviour.NotificationFrequency.TRANSACTION_COMMIT);
+	this.beforeDeleteNode = new JavaBehaviour(this, "beforeDeleteNode",
+		Behaviour.NotificationFrequency.FIRST_EVENT);
+	this.onUpdateProperties = new JavaBehaviour(this, "onUpdateProperties",
+		Behaviour.NotificationFrequency.TRANSACTION_COMMIT);
 
-        this.policyComponent.bindClassBehaviour(
-                NodeServicePolicies.BeforeDeleteNodePolicy.QNAME,
-                ContentModel.TYPE_CMOBJECT,
-                this.beforeDeleteNode);
+	// Bind behaviours to node policies
+	this.policyComponent.bindClassBehaviour(NodeServicePolicies.OnCreateNodePolicy.QNAME,
+		ContentModel.TYPE_CMOBJECT, this.onCreateNode);
 
-        this.policyComponent.bindClassBehaviour(
-                NodeServicePolicies.OnUpdatePropertiesPolicy.QNAME,
-                ContentModel.TYPE_CMOBJECT,
-                this.onUpdateProperties);
+	this.policyComponent.bindClassBehaviour(NodeServicePolicies.BeforeDeleteNodePolicy.QNAME,
+		ContentModel.TYPE_CMOBJECT, this.beforeDeleteNode);
+
+	this.policyComponent.bindClassBehaviour(NodeServicePolicies.OnUpdatePropertiesPolicy.QNAME,
+		ContentModel.TYPE_CMOBJECT, this.onUpdateProperties);
 
     }
 
@@ -95,16 +91,16 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
      */
     @Override
     public void onCreateNode(final ChildAssociationRef childAssocRef) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Inside onCreateNode");
-		}
-        final NodeRef nodeRef = childAssocRef.getChildRef();
-        if (nodeService.exists(nodeRef)) {
-        	final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
-            nodeEvent.setEventType(NodeEvent.EventType.CREATE);
-            nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-            messageService.publish(nodeEvent);
-        }
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("Inside onCreateNode");
+	}
+	final NodeRef nodeRef = childAssocRef.getChildRef();
+	if (nodeService.exists(nodeRef)) {
+	    final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
+	    nodeEvent.setEventType(NodeEvent.EventType.CREATE);
+	    nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+	    messageService.publish(nodeEvent);
+	}
     }
 
     /**
@@ -114,36 +110,36 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
      */
     @Override
     public void beforeDeleteNode(final NodeRef nodeRef) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Inside onDeleteNode");
-		}
-        if (nodeService.exists(nodeRef)) {
-        	final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
-            nodeEvent.setEventType(NodeEvent.EventType.DELETE);
-            nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-            messageService.publish(nodeEvent);
-        }
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("Inside onDeleteNode");
+	}
+	if (nodeService.exists(nodeRef)) {
+	    final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
+	    nodeEvent.setEventType(NodeEvent.EventType.DELETE);
+	    nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+	    messageService.publish(nodeEvent);
+	}
     }
 
     /**
      * On update properties.
      *
-     * @param nodeRef the node ref
+     * @param nodeRef     the node ref
      * @param beforeProps the before props
-     * @param afterProps the after props
+     * @param afterProps  the after props
      */
     @Override
-	public void onUpdateProperties(final NodeRef nodeRef, final Map<QName, Serializable> beforeProps,
-			final Map<QName, Serializable> afterProps) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Inside onUpdateProperties");
-		}
-        if (nodeService.exists(nodeRef)) {
-        	final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
-            nodeEvent.setEventType(NodeEvent.EventType.UPDATE);
-            nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
-            messageService.publish(nodeEvent);
-        }
+    public void onUpdateProperties(final NodeRef nodeRef, final Map<QName, Serializable> beforeProps,
+	    final Map<QName, Serializable> afterProps) {
+	if (LOGGER.isDebugEnabled()) {
+	    LOGGER.debug("Inside onUpdateProperties");
+	}
+	if (nodeService.exists(nodeRef)) {
+	    final NodeEvent nodeEvent = nodeTransformer.transform(nodeRef);
+	    nodeEvent.setEventType(NodeEvent.EventType.UPDATE);
+	    nodeEvent.setPermissions(nodePermissionsTransformer.transform(nodeRef));
+	    messageService.publish(nodeEvent);
+	}
     }
 
     /**
@@ -152,7 +148,7 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
      * @param nodeService the new node service
      */
     public void setNodeService(final NodeService nodeService) {
-        this.nodeService = nodeService;
+	this.nodeService = nodeService;
     }
 
     /**
@@ -161,7 +157,7 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
      * @param policyComponent the new policy component
      */
     public void setPolicyComponent(final PolicyComponent policyComponent) {
-        this.policyComponent = policyComponent;
+	this.policyComponent = policyComponent;
     }
 
     /**
@@ -170,7 +166,7 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
      * @param messageService the new message service
      */
     public void setMessageService(final MessageService messageService) {
-        this.messageService = messageService;
+	this.messageService = messageService;
     }
 
     /**
@@ -179,7 +175,7 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
      * @param nodeTransformer the new node transformer
      */
     public void setNodeTransformer(final NodeRefToNodeEvent nodeTransformer) {
-        this.nodeTransformer = nodeTransformer;
+	this.nodeTransformer = nodeTransformer;
     }
 
     /**
@@ -188,6 +184,6 @@ public class GenerateNodeEvent implements NodeServicePolicies.BeforeDeleteNodePo
      * @param nodePermissionsTransformer the new node permissions transformer
      */
     public void setNodePermissionsTransformer(final NodeRefToNodePermissions nodePermissionsTransformer) {
-        this.nodePermissionsTransformer = nodePermissionsTransformer;
+	this.nodePermissionsTransformer = nodePermissionsTransformer;
     }
 }

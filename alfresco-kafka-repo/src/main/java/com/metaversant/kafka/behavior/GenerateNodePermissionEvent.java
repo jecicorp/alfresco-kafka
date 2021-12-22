@@ -12,29 +12,24 @@ import com.metaversant.kafka.model.NodeEvent;
 import com.metaversant.kafka.service.MessageService;
 import com.metaversant.kafka.transform.NodeRefToNodePermissions;
 
-
 /**
  * Created by jpotts, Metaversant on 8/28/19.
  */
 public class GenerateNodePermissionEvent
-		implements PermissionServicePolicies.OnGrantLocalPermission, PermissionServicePolicies.OnRevokeLocalPermission,
-		PermissionServicePolicies.OnInheritPermissionsDisabled, PermissionServicePolicies.OnInheritPermissionsEnabled {
-	
+	implements PermissionServicePolicies.OnGrantLocalPermission, PermissionServicePolicies.OnRevokeLocalPermission,
+	PermissionServicePolicies.OnInheritPermissionsDisabled, PermissionServicePolicies.OnInheritPermissionsEnabled {
+
     /** The LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(GenerateNodePermissionEvent.class);
 
-    /////////////////////  Dependencies [Start] ////////////////
     /** The policy component. */
     private PolicyComponent policyComponent;
-    
+
     /** The message service. */
     private MessageService messageService;
-    
+
     /** The node permissions transformer. */
     private NodeRefToNodePermissions nodePermissionsTransformer;
-    /////////////////////  Dependencies [End] //////////////////
-
-    /////////////////////  Behaviours [Start] //////////////////
     /** The on grant local permission. */
     private Behaviour onGrantLocalPermission;
     
@@ -89,8 +84,8 @@ public class GenerateNodePermissionEvent
     /**
      * On grant local permission.
      *
-     * @param nodeRef the node ref
-     * @param authority the authority
+     * @param nodeRef    the node ref
+     * @param authority  the authority
      * @param permission the permission
      */
     @Override
@@ -110,8 +105,8 @@ public class GenerateNodePermissionEvent
     /**
      * On revoke local permission.
      *
-     * @param nodeRef the node ref
-     * @param authority the authority
+     * @param nodeRef    the node ref
+     * @param authority  the authority
      * @param permission the permission
      */
     @Override
@@ -132,7 +127,7 @@ public class GenerateNodePermissionEvent
      * On inherit permissions disabled.
      *
      * @param nodeRef the node ref
-     * @param async the async
+     * @param async   the async
      */
     @Override
     public void onInheritPermissionsDisabled(final NodeRef nodeRef, final boolean async) {
@@ -169,7 +164,7 @@ public class GenerateNodePermissionEvent
      * @param policyComponent the new policy component
      */
     public void setPolicyComponent(final PolicyComponent policyComponent) {
-        this.policyComponent = policyComponent;
+	this.policyComponent = policyComponent;
     }
 
     /**
@@ -178,7 +173,7 @@ public class GenerateNodePermissionEvent
      * @param messageService the new message service
      */
     public void setMessageService(final MessageService messageService) {
-        this.messageService = messageService;
+	this.messageService = messageService;
     }
 
     /**
@@ -187,6 +182,6 @@ public class GenerateNodePermissionEvent
      * @param nodePermissionsTransformer the new node permissions transformer
      */
     public void setNodePermissionsTransformer(final NodeRefToNodePermissions nodePermissionsTransformer) {
-        this.nodePermissionsTransformer = nodePermissionsTransformer;
+	this.nodePermissionsTransformer = nodePermissionsTransformer;
     }
 }
